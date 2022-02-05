@@ -99,9 +99,24 @@ const sketch = ({ context }) => {
 
   let material = getMaterial();
 
+  // Balls stuff
+  let ballGeometry = new THREE.IcosahedronBufferGeometry(0.26, 5)
+  let ball_1 = new THREE.Mesh(ballGeometry, getMaterial())
+  let ball_2 = new THREE.Mesh(ballGeometry, getMaterial())
+
+  scene.add(ball_1)
+  scene.add(ball_2)
+
   // Setup a mesh with geometry + material
   const mesh = new THREE.Mesh(geometry, material);
+
+
+
+
+
   mesh.castShadow = mesh.receiveShadow = true;
+  ball_1.castShadow = mesh.receiveShadow = true;
+  ball_2.castShadow = mesh.receiveShadow = true;
   scene.add(mesh);
 
   scene.add(new THREE.AmbientLight(0xffffff, 1));
@@ -134,6 +149,19 @@ const sketch = ({ context }) => {
     render({ time, playhead }) {
       if (material.userData.shader)
         material.userData.shader.uniforms.playhead.value = playhead;
+
+      if(ball_1 && ball_2){
+        let theta_1 = playhead * 2 * Math.PI
+        let theta_2 = playhead * 2 * Math.PI + Math.PI
+
+        ball_1.position.x = 0.5 * Math.sin(theta_1)
+        ball_1.position.z = 0.5 * Math.cos(theta_1)
+
+        ball_2.position.x = 0.5 * Math.sin(theta_2)
+        ball_2.position.z = 0.5 * Math.cos(theta_2)
+        // ball_1.position.y = 0.5 
+
+      }
       console.log("playhead ");
       mesh.rotation.y = playhead * Math.PI * 2;
       controls.update();
